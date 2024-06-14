@@ -1,23 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response } from 'express';
 import { User } from './user.model';
-import httpStatus from 'http-status';
+import bcrypt from 'bcrypt';
 
-const registerUser = async (req: Request, res: Response) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).send({
-      success: true,
-      statusCode: httpStatus[201],
-      message: 'User registered successfully',
-      data: user,
-    });
-  } catch (error: any) {
-    res.status(400).send({ success: false, message: error.message });
-  }
+const signUp = async (userData: {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  phone: string;
+  address: string;
+}) => {
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
+  const user = new User({
+    ...userData,
+    password: hashedPassword,
+  });
+
+  return await user.save();
 };
 
-export const UserServices = {
-  registerUser,
+const signIn = async (email: string) => {
+  return await User.findOne({ email }).select('+password');
+};
+
+export const AuthServices = {
+  signUp,
+  signIn,
 };

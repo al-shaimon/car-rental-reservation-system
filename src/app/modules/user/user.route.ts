@@ -1,8 +1,15 @@
 import express from 'express';
-import { UserControllers } from './user.controller';
+import { AuthControllers } from './user.controller';
+import validateRequest from '../../middlewares/validateRequest';
+import { AuthValidations } from './user.validation';
 
 const router = express.Router();
 
-router.post('/signup', UserControllers.createUser);
+router.post(
+  '/signup',
+  validateRequest(AuthValidations.userValidationSchema),
+  AuthControllers.signup,
+);
+router.post('/signin', AuthControllers.signin);
 
-export const UserRoutes = router;
+export const AuthRoutes = router;
