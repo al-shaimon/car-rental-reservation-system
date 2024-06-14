@@ -3,6 +3,7 @@ import { Booking } from './booking.model';
 import { Car } from '../car/car.model';
 import { TCar } from '../car/car.interface';
 
+// get all bookings admin
 const getAllBookings = async (
   filters: { carId?: string; date?: string } = {},
 ) => {
@@ -21,6 +22,7 @@ const getAllBookings = async (
     .populate('car');
 };
 
+// bookCar by user
 const bookCar = async (bookingData: {
   carId: string;
   userId: string;
@@ -49,6 +51,7 @@ const bookCar = async (bookingData: {
   return populatedBooking;
 };
 
+// get all booked car by logged in user
 const getUserBookings = async (userId: string) => {
   return await Booking.find({ user: userId })
     .populate({ path: 'user', select: '-createdAt -updatedAt' })

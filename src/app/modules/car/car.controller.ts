@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { sendNoDataFoundResponse } from '../../utils/responseUtils';
 import { CarServices } from './car.service';
 
+// create car by admin
 const createCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const car = await CarServices.createCarIntoDB(req.body);
@@ -32,6 +33,8 @@ const createCar = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// get all car by any user
+
 const getAllCars = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const cars = await CarServices.getAllCars();
@@ -48,6 +51,8 @@ const getAllCars = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+// get single car by any user
 
 const getCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -66,6 +71,8 @@ const getCar = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// update car by admin
+
 const updateCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const car = await CarServices.updateSingleCar(req.params.id, req.body);
@@ -82,6 +89,8 @@ const updateCar = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+// delete car by admin
 
 const deleteCar = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -6,6 +6,8 @@ import config from '../../config';
 import { sendNoDataFoundResponse } from '../../utils/responseUtils';
 import { AuthServices } from './user.service';
 
+// signup controller
+
 export const signup = async (
   req: Request,
   res: Response,
@@ -45,6 +47,8 @@ export const signup = async (
     next(error);
   }
 };
+
+// signin controller
 
 export const signin = async (
   req: Request,

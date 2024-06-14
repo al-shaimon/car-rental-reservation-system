@@ -1,6 +1,8 @@
 import { User } from './user.model';
 import bcrypt from 'bcrypt';
 
+// signup service
+
 const signUp = async (userData: {
   name: string;
   email: string;
@@ -17,6 +19,8 @@ const signUp = async (userData: {
 
   return await user.save();
 };
+
+// signin service
 
 const signIn = async (email: string) => {
   return await User.findOne({ email }).select('+password');

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { BookingServices } from './booking.service';
 import { sendNoDataFoundResponse } from '../../utils/responseUtils';
 
+// getAllBookings admin
 const getAllBookings = async (
   req: Request,
   res: Response,
@@ -36,6 +37,7 @@ const getAllBookings = async (
   }
 };
 
+// bookCar user
 const bookCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { carId, date, startTime } = req.body;
@@ -57,6 +59,7 @@ const bookCar = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// get all booked car by logged in user
 const getUserBookings = async (
   req: Request,
   res: Response,
