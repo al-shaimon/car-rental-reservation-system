@@ -1,10 +1,14 @@
-export interface TCar  {
+import { Document } from 'mongoose';
+
+export interface TCar extends Document {
   name: string;
   description: string;
   color: string;
   isElectric: boolean;
-  status: 'available' | 'unavailable';
   features: string[];
   pricePerHour: number;
+  status: 'available' | 'unavailable';
   isDeleted: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
