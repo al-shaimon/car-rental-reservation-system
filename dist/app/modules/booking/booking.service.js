@@ -55,14 +55,26 @@ const returnCar = (bookingId, endTime) => __awaiter(void 0, void 0, void 0, func
     if (!booking) {
         throw new Error('Booking not found');
     }
-    const startTime = parseInt(booking.startTime.split(':')[0]);
-    const endHour = parseInt(endTime.split(':')[0]);
-    const duration = endHour - startTime;
-    const totalCost = duration * booking.car.pricePerHour;
+    if (booking.car.status === 'available') {
+        throw new Error('Car has already been returned');
+    }
+    const [startHour, startMinute] = booking.startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+    const startTotalMinutes = startHour * 60 + startMinute;
+    const endTotalMinutes = endHour * 60 + endMinute;
+    let durationMinutes = endTotalMinutes - startTotalMinutes;
+    if (durationMinutes < 0) {
+        durationMinutes += 24 * 60;
+    }
+    const totalCost = ((durationMinutes / 60) * booking.car.pricePerHour).toFixed(2);
+    // Update booking with end time and total cost
     booking.endTime = endTime;
-    booking.totalCost = totalCost;
+    booking.totalCost = parseFloat(totalCost); // Store as a number
+    // Update the car status to 'available'
     yield car_model_1.Car.findByIdAndUpdate(booking.car._id, { status: 'available' });
+    // Save the updated booking
     yield booking.save();
+    // Populate and return the updated booking
     const updatedBooking = yield booking_model_1.Booking.findById(bookingId)
         .populate({ path: 'user', select: '-createdAt -updatedAt' })
         .populate('car');

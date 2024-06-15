@@ -67,6 +67,10 @@ const returnCar = async (bookingId: string, endTime: string) => {
     throw new Error('Booking not found');
   }
 
+  if (booking.car.status === 'available') {
+    throw new Error('Car has already been returned');
+  }
+
   const [startHour, startMinute] = booking.startTime.split(':').map(Number);
   const [endHour, endMinute] = endTime.split(':').map(Number);
 
