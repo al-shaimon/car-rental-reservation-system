@@ -8,9 +8,14 @@ const signUp = async (userData: {
   email: string;
   role: string;
   password: string;
+  confirmPassword: string;
   phone: string;
-  address: string;
 }) => {
+  // Check if passwords match
+  if (userData.password !== userData.confirmPassword) {
+    throw new Error('Passwords do not match');
+  }
+  
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const user = new User({
     ...userData,

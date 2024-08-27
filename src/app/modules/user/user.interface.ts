@@ -6,8 +6,7 @@ export interface TUser extends Document {
   email: string;
   role: 'user' | 'admin';
   password: string;
-  phone: string;
-  address: string;
+  phone?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

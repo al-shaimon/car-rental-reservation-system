@@ -21,15 +21,22 @@ const user_service_1 = require("./user.service");
 // signup controller
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, role, password, phone, address } = req.body;
+        const { name, email, role, password, confirmPassword, phone } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                statusCode: 400,
+                message: 'Password and confirm password do not match',
+            });
+        }
         // const hashedPassword = await bcrypt.hash(password, 10);
         const user = yield user_service_1.AuthServices.signUp({
             name,
             email,
             role,
             password,
+            confirmPassword,
             phone,
-            address,
         });
         // Sending response without password
         const responseUser = {
@@ -38,7 +45,6 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             email: user.email,
             role: user.role,
             phone: user.phone,
-            address: user.address,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
@@ -70,7 +76,6 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             email: user.email,
             role: user.role,
             phone: user.phone,
-            address: user.address,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };

@@ -5,8 +5,8 @@ const userValidationSchema = z.object({
   email: z.string().email(),
   role: z.enum(['user', 'admin']),
   password: z.string().min(6),
-  phone: z.string(),
-  address: z.string(),
+  confirmPassword: z.string().min(6),
+  phone: z.string().optional(),
 });
 
 export const AuthValidations = {

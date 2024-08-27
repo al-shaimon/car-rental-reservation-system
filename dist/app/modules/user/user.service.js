@@ -17,6 +17,10 @@ const user_model_1 = require("./user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 // signup service
 const signUp = (userData) => __awaiter(void 0, void 0, void 0, function* () {
+    // Check if passwords match
+    if (userData.password !== userData.confirmPassword) {
+        throw new Error('Passwords do not match');
+    }
     const hashedPassword = yield bcrypt_1.default.hash(userData.password, 10);
     const user = new user_model_1.User(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
     return yield user.save();

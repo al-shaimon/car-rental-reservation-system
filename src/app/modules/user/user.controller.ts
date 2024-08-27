@@ -14,15 +14,24 @@ export const signup = async (
   next: NextFunction,
 ) => {
   try {
-    const { name, email, role, password, phone, address } = req.body;
+    const { name, email, role, password, confirmPassword, phone } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'Password and confirm password do not match',
+      });
+    }
+
     // const hashedPassword = await bcrypt.hash(password, 10);
     const user = await AuthServices.signUp({
       name,
       email,
       role,
       password,
+      confirmPassword,
       phone,
-      address,
     });
 
     // Sending response without password
@@ -32,7 +41,6 @@ export const signup = async (
       email: user.email,
       role: user.role,
       phone: user.phone,
-      address: user.address,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -74,7 +82,6 @@ export const signin = async (
       email: user.email,
       role: user.role,
       phone: user.phone,
-      address: user.address,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
