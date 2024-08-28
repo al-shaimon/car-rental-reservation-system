@@ -22,7 +22,7 @@ const signUp = (userData) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error('Passwords do not match');
     }
     const hashedPassword = yield bcrypt_1.default.hash(userData.password, 10);
-    const user = new user_model_1.User(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
+    const user = new user_model_1.User(Object.assign(Object.assign({}, userData), { password: hashedPassword, role: userData.role || 'user' }));
     return yield user.save();
 });
 // signin service

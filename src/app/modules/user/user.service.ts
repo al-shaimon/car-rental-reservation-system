@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 const signUp = async (userData: {
   name: string;
   email: string;
-  role: string;
+  role?: string;
   password: string;
   confirmPassword: string;
   phone: string;
@@ -15,11 +15,12 @@ const signUp = async (userData: {
   if (userData.password !== userData.confirmPassword) {
     throw new Error('Passwords do not match');
   }
-  
+
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const user = new User({
     ...userData,
     password: hashedPassword,
+    role: userData.role || 'user',
   });
 
   return await user.save();
