@@ -6,6 +6,7 @@ const BookingSchema = new mongoose_1.Schema({
     date: { type: String, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, default: null },
+    approval: { type: Boolean, default: false },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
@@ -17,5 +18,6 @@ const BookingSchema = new mongoose_1.Schema({
         required: true,
     },
     totalCost: { type: Number, default: 0 },
+    isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 exports.Booking = (0, mongoose_1.model)('Booking', BookingSchema);

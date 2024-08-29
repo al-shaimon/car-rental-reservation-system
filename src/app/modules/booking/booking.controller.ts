@@ -79,6 +79,7 @@ const getUserBookings = async (
   }
 };
 
+// return car
 const returnCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookingId, endTime } = req.body;
@@ -100,9 +101,110 @@ const returnCar = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// update booking by user
+const updateUserBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const bookingId = req.params.id;
+    const userId = req.user._id;
+    const updateData = req.body;
+
+    const updatedBooking = await BookingServices.updateUserBooking(
+      bookingId,
+      userId,
+      updateData,
+    );
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Booking updated successfully',
+      data: updatedBooking,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// update booking by admin
+const updateAdminBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const bookingId = req.params.id;
+    const updateData = req.body;
+
+    const updatedBooking = await BookingServices.updateAdminBooking(
+      bookingId,
+      updateData,
+    );
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Booking updated successfully by admin',
+      data: updatedBooking,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// delete booking by user (soft delete)
+const deleteUserBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const booking = await BookingServices.deleteUserBooking(
+      req.params.id,
+      req.user._id,
+    );
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Booking deleted successfully',
+      data: booking,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// delete booking by admin (soft delete)
+const deleteAdminBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const booking = await BookingServices.deleteAdminBooking(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Booking deleted successfully by admin',
+      data: booking,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const BookingControllers = {
   getAllBookings,
   bookCar,
   getUserBookings,
   returnCar,
+  updateUserBooking,
+  updateAdminBooking,
+  deleteUserBooking,
+  deleteAdminBooking,
 };

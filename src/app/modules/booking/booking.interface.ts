@@ -3,9 +3,11 @@ export interface TBooking extends Document {
   date: string;
   startTime: string;
   endTime: string | null;
+  approval: boolean;
   user: Schema.Types.ObjectId;
   car: Schema.Types.ObjectId;
   totalCost: number;
+  isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

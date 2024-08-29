@@ -175,9 +175,51 @@ export const resetPassword = async (
   }
 };
 
+// Update profile
+
+export const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user.id;
+    const { name, phone } = req.body;
+
+    const updatedUser = await AuthServices.updateProfile(userId, {
+      name,
+      phone,
+    });
+
+    if (!updatedUser) {
+      return sendNoDataFoundResponse(res);
+    }
+
+    // Sending response without password
+    const responseUser = {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      phone: updatedUser.phone,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: responseUser,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const AuthControllers = {
   signup,
   signin,
   forgetPassword,
   resetPassword,
+  updateProfile,
 };

@@ -52,6 +52,11 @@ const updatePassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0
         passwordResetExpires: undefined,
     });
 });
+const updateProfile = (userId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findByIdAndUpdate(userId, {
+        $set: updateData,
+    }, { new: true });
+});
 exports.AuthServices = {
     signUp,
     signIn,
@@ -59,4 +64,5 @@ exports.AuthServices = {
     setResetToken,
     findUserByResetToken,
     updatePassword,
+    updateProfile,
 };

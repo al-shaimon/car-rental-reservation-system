@@ -80,9 +80,66 @@ const returnCar = (bookingId, endTime) => __awaiter(void 0, void 0, void 0, func
         .populate('car');
     return updatedBooking;
 });
+// update booking by user
+const updateUserBooking = (bookingId, userId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.Booking.findOne({ _id: bookingId, user: userId });
+    if (!booking) {
+        throw new Error('Booking not found or you do not have permission to update this booking');
+    }
+    // You might want to adjust this to allow updates based on your requirements
+    if (booking.approval) {
+        throw new Error('Cannot update booking. The booking has already been approved');
+    }
+    Object.assign(booking, updateData);
+    if (updateData.date || updateData.startTime) {
+        const car = yield car_model_1.Car.findById(booking.car);
+        if ((car === null || car === void 0 ? void 0 : car.status) === 'unavailable') {
+            throw new Error('Car is not available for booking');
+        }
+    }
+    yield booking.save();
+    return booking_model_1.Booking.findById(bookingId).populate('user').populate('car');
+});
+// update booking by admin
+const updateAdminBooking = (bookingId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.Booking.findById(bookingId);
+    if (!booking) {
+        throw new Error('Booking not found');
+    }
+    Object.assign(booking, updateData);
+    yield booking.save();
+    return booking_model_1.Booking.findById(bookingId).populate('user').populate('car');
+});
+// Soft delete booking by user
+const deleteUserBooking = (bookingId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.Booking.findOne({ _id: bookingId, user: userId });
+    if (!booking) {
+        throw new Error('Booking not found or you do not have permission to delete this booking');
+    }
+    if (booking.approval) {
+        throw new Error('Cannot delete booking. The booking has already been approved');
+    }
+    booking.isDeleted = true;
+    yield booking.save();
+    return booking;
+});
+// Soft delete booking by admin
+const deleteAdminBooking = (bookingId) => __awaiter(void 0, void 0, void 0, function* () {
+    const booking = yield booking_model_1.Booking.findById(bookingId);
+    if (!booking) {
+        throw new Error('Booking not found');
+    }
+    booking.isDeleted = true;
+    yield booking.save();
+    return booking;
+});
 exports.BookingServices = {
     getAllBookings,
     bookCar,
     getUserBookings,
     returnCar,
+    updateUserBooking,
+    updateAdminBooking,
+    deleteUserBooking,
+    deleteAdminBooking,
 };

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthControllers = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
+exports.AuthControllers = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -152,9 +152,43 @@ const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.resetPassword = resetPassword;
+// Update profile
+const updateProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.user.id;
+        const { name, phone } = req.body;
+        const updatedUser = yield user_service_1.AuthServices.updateProfile(userId, {
+            name,
+            phone,
+        });
+        if (!updatedUser) {
+            return (0, responseUtils_1.sendNoDataFoundResponse)(res);
+        }
+        // Sending response without password
+        const responseUser = {
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            role: updatedUser.role,
+            phone: updatedUser.phone,
+            createdAt: updatedUser.createdAt,
+            updatedAt: updatedUser.updatedAt,
+        };
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: responseUser,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.updateProfile = updateProfile;
 exports.AuthControllers = {
     signup: exports.signup,
     signin: exports.signin,
     forgetPassword: exports.forgetPassword,
     resetPassword: exports.resetPassword,
+    updateProfile: exports.updateProfile,
 };

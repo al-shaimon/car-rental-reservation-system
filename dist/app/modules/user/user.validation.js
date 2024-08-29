@@ -17,8 +17,13 @@ const resetPasswordSchema = zod_1.z.object({
     password: zod_1.z.string().min(6),
     confirmPassword: zod_1.z.string().min(6),
 });
+const updateProfileSchema = zod_1.z.object({
+    name: zod_1.z.string().optional(),
+    phone: zod_1.z.string().optional(),
+});
 exports.AuthValidations = {
     userValidationSchema,
     forgetPasswordSchema,
     resetPasswordSchema,
+    updateProfileSchema,
 };

@@ -6,7 +6,21 @@ const userBookingValidationSchema = zod_1.z.object({
     carId: zod_1.z.string(),
     date: zod_1.z.string(),
     startTime: zod_1.z.string(),
+    endTime: zod_1.z.string().optional(),
+    approval: zod_1.z.boolean().optional(),
+});
+const userUpdateBookingValidationSchema = zod_1.z.object({
+    date: zod_1.z.string().optional(),
+    startTime: zod_1.z.string().optional(),
+});
+const adminUpdateBookingValidationSchema = zod_1.z.object({
+    date: zod_1.z.string().optional(),
+    startTime: zod_1.z.string().optional(),
+    endTime: zod_1.z.string().optional(),
+    approval: zod_1.z.boolean().optional(),
 });
 exports.BookingValidations = {
     userBookingValidationSchema,
+    userUpdateBookingValidationSchema,
+    adminUpdateBookingValidationSchema,
 };

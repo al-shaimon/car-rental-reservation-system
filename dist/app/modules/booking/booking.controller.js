@@ -76,6 +76,7 @@ const getUserBookings = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         next(error);
     }
 });
+// return car
 const returnCar = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { bookingId, endTime } = req.body;
@@ -94,9 +95,78 @@ const returnCar = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         next(error);
     }
 });
+// update booking by user
+const updateUserBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const bookingId = req.params.id;
+        const userId = req.user._id;
+        const updateData = req.body;
+        const updatedBooking = yield booking_service_1.BookingServices.updateUserBooking(bookingId, userId, updateData);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Booking updated successfully',
+            data: updatedBooking,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// update booking by admin
+const updateAdminBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const bookingId = req.params.id;
+        const updateData = req.body;
+        const updatedBooking = yield booking_service_1.BookingServices.updateAdminBooking(bookingId, updateData);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Booking updated successfully by admin',
+            data: updatedBooking,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// delete booking by user (soft delete)
+const deleteUserBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const booking = yield booking_service_1.BookingServices.deleteUserBooking(req.params.id, req.user._id);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Booking deleted successfully',
+            data: booking,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// delete booking by admin (soft delete)
+const deleteAdminBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const booking = yield booking_service_1.BookingServices.deleteAdminBooking(req.params.id);
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: 'Booking deleted successfully by admin',
+            data: booking,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.BookingControllers = {
     getAllBookings,
     bookCar,
     getUserBookings,
     returnCar,
+    updateUserBooking,
+    updateAdminBooking,
+    deleteUserBooking,
+    deleteAdminBooking,
 };

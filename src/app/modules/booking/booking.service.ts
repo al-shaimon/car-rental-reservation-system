@@ -2,6 +2,7 @@
 import { Booking } from './booking.model';
 import { Car } from '../car/car.model';
 import { TCar } from '../car/car.interface';
+import { TBooking } from './booking.interface';
 
 // get all bookings admin
 const getAllBookings = async (
@@ -105,9 +106,102 @@ const returnCar = async (bookingId: string, endTime: string) => {
   return updatedBooking;
 };
 
+// update booking by user
+const updateUserBooking = async (
+  bookingId: string,
+  userId: string,
+  updateData: Partial<TBooking>,
+) => {
+  const booking = await Booking.findOne({ _id: bookingId, user: userId });
+
+  if (!booking) {
+    throw new Error(
+      'Booking not found or you do not have permission to update this booking',
+    );
+  }
+
+  // You might want to adjust this to allow updates based on your requirements
+  if (booking.approval) {
+    throw new Error(
+      'Cannot update booking. The booking has already been approved',
+    );
+  }
+
+  Object.assign(booking, updateData);
+
+  if (updateData.date || updateData.startTime) {
+    const car = await Car.findById(booking.car);
+    if (car?.status === 'unavailable') {
+      throw new Error('Car is not available for booking');
+    }
+  }
+
+  await booking.save();
+
+  return Booking.findById(bookingId).populate('user').populate('car');
+};
+
+// update booking by admin
+const updateAdminBooking = async (
+  bookingId: string,
+  updateData: Partial<TBooking>,
+) => {
+  const booking = await Booking.findById(bookingId);
+
+  if (!booking) {
+    throw new Error('Booking not found');
+  }
+
+  Object.assign(booking, updateData);
+
+  await booking.save();
+
+  return Booking.findById(bookingId).populate('user').populate('car');
+};
+
+// Soft delete booking by user
+const deleteUserBooking = async (bookingId: string, userId: string) => {
+  const booking = await Booking.findOne({ _id: bookingId, user: userId });
+
+  if (!booking) {
+    throw new Error(
+      'Booking not found or you do not have permission to delete this booking',
+    );
+  }
+
+  if (booking.approval) {
+    throw new Error(
+      'Cannot delete booking. The booking has already been approved',
+    );
+  }
+
+  booking.isDeleted = true;
+  await booking.save();
+
+  return booking;
+};
+
+// Soft delete booking by admin
+const deleteAdminBooking = async (bookingId: string) => {
+  const booking = await Booking.findById(bookingId);
+
+  if (!booking) {
+    throw new Error('Booking not found');
+  }
+
+  booking.isDeleted = true;
+  await booking.save();
+
+  return booking;
+};
+
 export const BookingServices = {
   getAllBookings,
   bookCar,
   getUserBookings,
   returnCar,
+  updateUserBooking,
+  updateAdminBooking,
+  deleteUserBooking,
+  deleteAdminBooking,
 };

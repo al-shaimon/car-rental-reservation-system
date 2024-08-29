@@ -63,6 +63,19 @@ const updatePassword = async (userId: string, newPassword: string) => {
   });
 };
 
+const updateProfile = async (
+  userId: string,
+  updateData: { name?: string; phone?: string },
+) => {
+  return await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: updateData,
+    },
+    { new: true },
+  );
+};
+
 export const AuthServices = {
   signUp,
   signIn,
@@ -70,4 +83,5 @@ export const AuthServices = {
   setResetToken,
   findUserByResetToken,
   updatePassword,
+  updateProfile,
 };

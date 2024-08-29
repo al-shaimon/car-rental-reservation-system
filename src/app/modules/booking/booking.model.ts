@@ -6,6 +6,7 @@ const BookingSchema: Schema = new Schema<TBooking>(
     date: { type: String, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, default: null },
+    approval: { type: Boolean, default: false },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -17,6 +18,7 @@ const BookingSchema: Schema = new Schema<TBooking>(
       required: true,
     },
     totalCost: { type: Number, default: 0 },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
