@@ -159,8 +159,12 @@ export const resetPassword = async (
       });
     }
 
+    // Reset password and immediately expire the token
     const hashedPassword = await bcrypt.hash(password, 10);
     await AuthServices.updatePassword(user._id, hashedPassword);
+
+    // Ensure the token cannot be used again
+    await AuthServices.setResetToken(user._id, '', Date.now());
 
     res.status(200).json({
       success: true,

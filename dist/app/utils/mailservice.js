@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendPasswordResetEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const config_1 = __importDefault(require("../config")); // Ensure you have your SMTP configuration in your config file
+const config_1 = __importDefault(require("../config"));
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
     auth: {
-        user: config_1.default.emailUser, // Your Gmail address
-        pass: config_1.default.emailPassword, // Your Gmail password or App password
+        user: config_1.default.emailUser,
+        pass: config_1.default.emailPassword,
     },
 });
 const sendPasswordResetEmail = (email, token) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,6 +35,7 @@ const sendPasswordResetEmail = (email, token) => __awaiter(void 0, void 0, void 
     try {
         yield transporter.sendMail(mailOptions);
         console.log('Password reset email sent to:', email);
+        console.log('Password reset token:', token);
     }
     catch (error) {
         console.error('Error sending password reset email:', error);

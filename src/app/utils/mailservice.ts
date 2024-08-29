@@ -1,11 +1,11 @@
 import nodemailer from 'nodemailer';
-import config from '../config'; // Ensure you have your SMTP configuration in your config file
+import config from '../config';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: config.emailUser, // Your Gmail address
-    pass: config.emailPassword, // Your Gmail password or App password
+    user: config.emailUser,
+    pass: config.emailPassword,
   },
 });
 
@@ -23,6 +23,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   try {
     await transporter.sendMail(mailOptions);
     console.log('Password reset email sent to:', email);
+    console.log('Password reset token:', token);
   } catch (error) {
     console.error('Error sending password reset email:', error);
     throw new Error('Failed to send password reset email');

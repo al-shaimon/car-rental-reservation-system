@@ -137,8 +137,11 @@ const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 message: 'Token is invalid or has expired',
             });
         }
+        // Reset password and immediately expire the token
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         yield user_service_1.AuthServices.updatePassword(user._id, hashedPassword);
+        // Ensure the token cannot be used again
+        yield user_service_1.AuthServices.setResetToken(user._id, '', Date.now());
         res.status(200).json({
             success: true,
             message: 'Password updated successfully!',
