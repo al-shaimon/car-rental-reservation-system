@@ -34,11 +34,8 @@ const sendPasswordResetEmail = (email, token) => __awaiter(void 0, void 0, void 
     };
     try {
         yield transporter.sendMail(mailOptions);
-        console.log('Password reset email sent to:', email);
-        console.log('Password reset token:', token);
     }
     catch (error) {
-        console.error('Error sending password reset email:', error);
         throw new Error('Failed to send password reset email');
     }
 });
