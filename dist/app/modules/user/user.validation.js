@@ -10,6 +10,15 @@ const userValidationSchema = zod_1.z.object({
     confirmPassword: zod_1.z.string().min(6),
     phone: zod_1.z.string().optional(),
 });
+const forgetPasswordSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+});
+const resetPasswordSchema = zod_1.z.object({
+    password: zod_1.z.string().min(6),
+    confirmPassword: zod_1.z.string().min(6),
+});
 exports.AuthValidations = {
     userValidationSchema,
+    forgetPasswordSchema,
+    resetPasswordSchema,
 };

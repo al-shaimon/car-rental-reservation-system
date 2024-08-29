@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from 'express';
+import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 import { sendNoDataFoundResponse } from '../../utils/responseUtils';
 import { AuthServices } from './user.service';
+import { sendPasswordResetEmail } from '../../utils/mailservice';
 
 // signup controller
 
@@ -98,7 +100,80 @@ export const signin = async (
   }
 };
 
+// Forget Password
+export const forgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req.body;
+    const user = await AuthServices.findUserByEmail(email);
+
+    if (!user) {
+      return sendNoDataFoundResponse(res);
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const resetToken = crypto.createHash('sha256').update(token).digest('hex');
+    const resetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    await AuthServices.setResetToken(user._id, resetToken, resetExpires);
+
+    // Send the password reset email
+    await sendPasswordResetEmail(user.email, token);
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset token sent to email!',
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+// Reset Password
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match',
+      });
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await AuthServices.findUserByResetToken(hashedToken);
+
+    if (!user || user.passwordResetExpires!.getTime() < Date.now()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is invalid or has expired',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await AuthServices.updatePassword(user._id, hashedPassword);
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully!',
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const AuthControllers = {
   signup,
   signin,
+  forgetPassword,
+  resetPassword,
 };

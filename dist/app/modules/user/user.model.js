@@ -8,5 +8,7 @@ const UserSchema = new mongoose_1.Schema({
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     password: { type: String, required: true, select: 0 },
     phone: { type: String },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
 }, { timestamps: true });
 exports.User = (0, mongoose_1.model)('User', UserSchema);

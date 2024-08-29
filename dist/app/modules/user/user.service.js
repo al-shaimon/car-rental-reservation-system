@@ -29,7 +29,34 @@ const signUp = (userData) => __awaiter(void 0, void 0, void 0, function* () {
 const signIn = (email) => __awaiter(void 0, void 0, void 0, function* () {
     return yield user_model_1.User.findOne({ email }).select('+password');
 });
+// find user by email service
+const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findOne({ email });
+});
+// set reset token service
+const setResetToken = (userId, resetToken, resetExpires) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findByIdAndUpdate(userId, {
+        passwordResetToken: resetToken,
+        passwordResetExpires: resetExpires,
+    });
+});
+// find user by reset token service
+const findUserByResetToken = (resetToken) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findOne({ passwordResetToken: resetToken });
+});
+// update password service
+const updatePassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findByIdAndUpdate(userId, {
+        password: newPassword,
+        passwordResetToken: undefined,
+        passwordResetExpires: undefined,
+    });
+});
 exports.AuthServices = {
     signUp,
     signIn,
+    findUserByEmail,
+    setResetToken,
+    findUserByResetToken,
+    updatePassword,
 };

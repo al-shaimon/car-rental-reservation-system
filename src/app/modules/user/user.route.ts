@@ -11,5 +11,15 @@ router.post(
   AuthControllers.signup,
 );
 router.post('/signin', AuthControllers.signin);
+router.post(
+  '/forget-password',
+  validateRequest(AuthValidations.forgetPasswordSchema),
+  AuthControllers.forgetPassword,
+);
+router.post(
+  '/reset-password/:token',
+  validateRequest(AuthValidations.resetPasswordSchema),
+  AuthControllers.resetPassword,
+);
 
 export const AuthRoutes = router;

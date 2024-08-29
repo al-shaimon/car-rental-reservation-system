@@ -8,6 +8,8 @@ const UserSchema: Schema = new Schema<TUser>(
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     password: { type: String, required: true, select: 0 },
     phone: { type: String },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   { timestamps: true },
 );

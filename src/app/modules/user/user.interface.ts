@@ -7,6 +7,8 @@ export interface TUser extends Document {
   role?: 'user' | 'admin';
   password: string;
   phone?: string;
+  passwordResetToken: string;
+  passwordResetExpires: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }

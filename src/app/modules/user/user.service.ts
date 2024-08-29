@@ -32,7 +32,42 @@ const signIn = async (email: string) => {
   return await User.findOne({ email }).select('+password');
 };
 
+// find user by email service
+const findUserByEmail = async (email: string) => {
+  return await User.findOne({ email });
+};
+
+// set reset token service
+const setResetToken = async (
+  userId: string,
+  resetToken: string,
+  resetExpires: number,
+) => {
+  return await User.findByIdAndUpdate(userId, {
+    passwordResetToken: resetToken,
+    passwordResetExpires: resetExpires,
+  });
+};
+
+// find user by reset token service
+const findUserByResetToken = async (resetToken: string) => {
+  return await User.findOne({ passwordResetToken: resetToken });
+};
+
+// update password service
+const updatePassword = async (userId: string, newPassword: string) => {
+  return await User.findByIdAndUpdate(userId, {
+    password: newPassword,
+    passwordResetToken: undefined,
+    passwordResetExpires: undefined,
+  });
+};
+
 export const AuthServices = {
   signUp,
   signIn,
+  findUserByEmail,
+  setResetToken,
+  findUserByResetToken,
+  updatePassword,
 };

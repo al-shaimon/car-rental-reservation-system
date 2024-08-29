@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthControllers = exports.signin = exports.signup = void 0;
+exports.AuthControllers = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
+const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../../config"));
 const responseUtils_1 = require("../../utils/responseUtils");
 const user_service_1 = require("./user.service");
+const mailservice_1 = require("../../utils/mailservice");
 // signup controller
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -92,7 +94,64 @@ const signin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.signin = signin;
+// Forget Password
+const forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        const user = yield user_service_1.AuthServices.findUserByEmail(email);
+        if (!user) {
+            return (0, responseUtils_1.sendNoDataFoundResponse)(res);
+        }
+        const token = crypto_1.default.randomBytes(32).toString('hex');
+        const resetToken = crypto_1.default.createHash('sha256').update(token).digest('hex');
+        const resetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        yield user_service_1.AuthServices.setResetToken(user._id, resetToken, resetExpires);
+        // Send the password reset email
+        yield (0, mailservice_1.sendPasswordResetEmail)(user.email, token);
+        res.status(200).json({
+            success: true,
+            message: 'Password reset token sent to email!',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.forgetPassword = forgetPassword;
+// Reset Password
+const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { token } = req.params;
+        const { password, confirmPassword } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Passwords do not match',
+            });
+        }
+        const hashedToken = crypto_1.default.createHash('sha256').update(token).digest('hex');
+        const user = yield user_service_1.AuthServices.findUserByResetToken(hashedToken);
+        if (!user || user.passwordResetExpires.getTime() < Date.now()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Token is invalid or has expired',
+            });
+        }
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        yield user_service_1.AuthServices.updatePassword(user._id, hashedPassword);
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully!',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.resetPassword = resetPassword;
 exports.AuthControllers = {
     signup: exports.signup,
     signin: exports.signin,
+    forgetPassword: exports.forgetPassword,
+    resetPassword: exports.resetPassword,
 };
