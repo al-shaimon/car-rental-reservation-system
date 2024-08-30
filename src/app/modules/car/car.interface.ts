@@ -6,7 +6,7 @@ export interface TCar extends Document {
   carType: string;
   image: string;
   color: string;
-  isElectric: boolean;
+  isElectric?: boolean;
   features?: string[];
   pricePerHour: number;
   status: 'available' | 'unavailable';

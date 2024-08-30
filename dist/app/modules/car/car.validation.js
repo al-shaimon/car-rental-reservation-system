@@ -8,7 +8,7 @@ const createCarValidationSchema = zod_1.z.object({
     carType: zod_1.z.string(),
     image: zod_1.z.string(),
     color: zod_1.z.string(),
-    isElectric: zod_1.z.boolean(),
+    isElectric: zod_1.z.boolean().optional(),
     features: zod_1.z.array(zod_1.z.string()).optional(),
     pricePerHour: zod_1.z.number().positive(),
     status: zod_1.z.enum(['available', 'unavailable']).default('available'),
