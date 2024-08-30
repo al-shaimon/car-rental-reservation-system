@@ -7,6 +7,10 @@ const BookingSchema = new mongoose_1.Schema({
     startTime: { type: String, required: true },
     endTime: { type: String, default: null },
     approval: { type: Boolean, default: false },
+    nidOrPassport: { type: String, required: true },
+    drivingLicense: { type: String, required: true },
+    paymentInfo: { type: String, required: true },
+    paymentStatus: { type: Boolean, default: false, optional: true },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',

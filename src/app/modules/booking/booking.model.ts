@@ -7,6 +7,10 @@ const BookingSchema: Schema = new Schema<TBooking>(
     startTime: { type: String, required: true },
     endTime: { type: String, default: null },
     approval: { type: Boolean, default: false },
+    nidOrPassport: { type: String, required: true },
+    drivingLicense: { type: String, required: true },
+    paymentInfo: { type: String, required: true },
+    paymentStatus: { type: Boolean, default: false, optional: true },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',

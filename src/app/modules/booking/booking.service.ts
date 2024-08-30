@@ -29,6 +29,9 @@ const bookCar = async (bookingData: {
   userId: string;
   date: string;
   startTime: string;
+  nidOrPassport: string;
+  drivingLicense: string;
+  paymentInfo: string;
 }) => {
   const car = await Car.findById(bookingData.carId);
 
@@ -41,6 +44,9 @@ const bookCar = async (bookingData: {
     user: bookingData.userId,
     date: bookingData.date,
     startTime: bookingData.startTime,
+    nidOrPassport: bookingData.nidOrPassport,
+    drivingLicense: bookingData.drivingLicense,
+    paymentInfo: bookingData.paymentInfo,
   });
 
   await Car.findByIdAndUpdate(bookingData.carId, { status: 'unavailable' });
@@ -120,8 +126,8 @@ const updateUserBooking = async (
     );
   }
 
-  // You might want to adjust this to allow updates based on your requirements
-  if (booking.approval) {
+  // Allow updating paymentStatus even if the booking is approved
+  if (booking.approval && !updateData.paymentStatus) {
     throw new Error(
       'Cannot update booking. The booking has already been approved',
     );

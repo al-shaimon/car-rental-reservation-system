@@ -37,6 +37,9 @@ const bookCar = (bookingData) => __awaiter(void 0, void 0, void 0, function* () 
         user: bookingData.userId,
         date: bookingData.date,
         startTime: bookingData.startTime,
+        nidOrPassport: bookingData.nidOrPassport,
+        drivingLicense: bookingData.drivingLicense,
+        paymentInfo: bookingData.paymentInfo,
     });
     yield car_model_1.Car.findByIdAndUpdate(bookingData.carId, { status: 'unavailable' });
     const populatedBooking = yield booking_model_1.Booking.findById(booking._id)
@@ -86,8 +89,8 @@ const updateUserBooking = (bookingId, userId, updateData) => __awaiter(void 0, v
     if (!booking) {
         throw new Error('Booking not found or you do not have permission to update this booking');
     }
-    // You might want to adjust this to allow updates based on your requirements
-    if (booking.approval) {
+    // Allow updating paymentStatus even if the booking is approved
+    if (booking.approval && !updateData.paymentStatus) {
         throw new Error('Cannot update booking. The booking has already been approved');
     }
     Object.assign(booking, updateData);

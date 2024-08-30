@@ -41,12 +41,15 @@ const getAllBookings = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 // bookCar user
 const bookCar = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { carId, date, startTime } = req.body;
+        const { carId, date, startTime, nidOrPassport, drivingLicense, paymentInfo, } = req.body;
         const booking = yield booking_service_1.BookingServices.bookCar({
             carId: carId,
             userId: req.user._id,
             date,
             startTime,
+            nidOrPassport,
+            drivingLicense,
+            paymentInfo,
         });
         res.status(200).json({
             success: true,

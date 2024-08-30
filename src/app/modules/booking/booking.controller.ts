@@ -40,12 +40,22 @@ const getAllBookings = async (
 // bookCar user
 const bookCar = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { carId, date, startTime } = req.body;
+    const {
+      carId,
+      date,
+      startTime,
+      nidOrPassport,
+      drivingLicense,
+      paymentInfo,
+    } = req.body;
     const booking = await BookingServices.bookCar({
       carId: carId,
       userId: req.user._id,
       date,
       startTime,
+      nidOrPassport,
+      drivingLicense,
+      paymentInfo,
     });
 
     res.status(200).json({
