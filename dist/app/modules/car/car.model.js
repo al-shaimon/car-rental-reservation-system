@@ -9,7 +9,7 @@ const CarSchema = new mongoose_1.Schema({
     image: { type: String, required: true },
     color: { type: String, required: true },
     isElectric: { type: Boolean, required: true },
-    features: { type: [String], required: true },
+    features: { type: [String] },
     pricePerHour: { type: Number, required: true },
     status: { type: String, default: 'available' },
     reviews: { type: [String] },
