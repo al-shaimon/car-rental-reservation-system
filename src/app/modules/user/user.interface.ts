@@ -9,6 +9,7 @@ export interface TUser extends Document {
   phone?: string;
   passwordResetToken: string;
   passwordResetExpires: Date;
+  isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

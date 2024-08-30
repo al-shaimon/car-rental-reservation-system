@@ -216,10 +216,63 @@ export const updateProfile = async (
   }
 };
 
+export const updateUserAsAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+    const { name, phone, role, isDeleted } = req.body;
+
+    const updatedUser = await AuthServices.updateUserByAdmin(userId, {
+      name,
+      phone,
+      role,
+      isDeleted,
+    });
+
+    if (!updatedUser) {
+      return sendNoDataFoundResponse(res);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully',
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const users = await AuthServices.getAllUsers();
+
+    res.status(200).json({
+      success: true,
+      message: 'All users retrieved successfully',
+      data: {
+        users,
+        count: users.length,
+      },
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const AuthControllers = {
   signup,
   signin,
   forgetPassword,
   resetPassword,
   updateProfile,
+  updateUserAsAdmin,
+  getAllUsers,
 };

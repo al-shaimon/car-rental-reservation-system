@@ -10,5 +10,6 @@ const UserSchema = new mongoose_1.Schema({
     phone: { type: String },
     passwordResetToken: String,
     passwordResetExpires: Date,
+    isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 exports.User = (0, mongoose_1.model)('User', UserSchema);

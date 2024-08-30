@@ -10,6 +10,7 @@ const UserSchema: Schema = new Schema<TUser>(
     phone: { type: String },
     passwordResetToken: String,
     passwordResetExpires: Date,
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

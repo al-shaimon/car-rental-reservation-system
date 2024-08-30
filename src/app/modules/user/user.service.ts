@@ -76,6 +76,30 @@ const updateProfile = async (
   );
 };
 
+const updateUserByAdmin = async (
+  userId: string,
+  updateData: {
+    name?: string;
+    phone?: string;
+    role?: string;
+    isDeleted?: boolean;
+  },
+) => {
+  return await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: updateData,
+    },
+    { new: true },
+  );
+};
+
+const getAllUsers = async () => {
+  return await User.find().select(
+    '-password -passwordResetToken -passwordResetExpires',
+  );
+};
+
 export const AuthServices = {
   signUp,
   signIn,
@@ -84,4 +108,6 @@ export const AuthServices = {
   findUserByResetToken,
   updatePassword,
   updateProfile,
+  updateUserByAdmin,
+  getAllUsers,
 };

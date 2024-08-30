@@ -57,6 +57,14 @@ const updateProfile = (userId, updateData) => __awaiter(void 0, void 0, void 0, 
         $set: updateData,
     }, { new: true });
 });
+const updateUserByAdmin = (userId, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.findByIdAndUpdate(userId, {
+        $set: updateData,
+    }, { new: true });
+});
+const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_model_1.User.find().select('-password -passwordResetToken -passwordResetExpires');
+});
 exports.AuthServices = {
     signUp,
     signIn,
@@ -65,4 +73,6 @@ exports.AuthServices = {
     findUserByResetToken,
     updatePassword,
     updateProfile,
+    updateUserByAdmin,
+    getAllUsers,
 };

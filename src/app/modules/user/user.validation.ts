@@ -23,9 +23,17 @@ const updateProfileSchema = z.object({
   phone: z.string().optional(),
 });
 
+const updateUserAsAdminSchema = z.object({
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  role: z.enum(['user', 'admin']).optional(),
+  isDeleted: z.boolean().optional(),
+});
+
 export const AuthValidations = {
   userValidationSchema,
   forgetPasswordSchema,
   resetPasswordSchema,
   updateProfileSchema,
+  updateUserAsAdminSchema,
 };

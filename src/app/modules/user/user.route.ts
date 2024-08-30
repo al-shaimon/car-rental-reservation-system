@@ -3,6 +3,7 @@ import { AuthControllers } from './user.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { AuthValidations } from './user.validation';
 import authMiddleware from './authMiddleware';
+import { adminMiddleware } from './adminMiddleware';
 
 const router = express.Router();
 
@@ -28,6 +29,21 @@ router.post(
   authMiddleware,
   validateRequest(AuthValidations.updateProfileSchema),
   AuthControllers.updateProfile,
+);
+
+router.put(
+  '/admin/users/:userId',
+  authMiddleware,
+  adminMiddleware,
+  validateRequest(AuthValidations.updateUserAsAdminSchema),
+  AuthControllers.updateUserAsAdmin,
+);
+
+router.get(
+  '/admin/users',
+  authMiddleware,
+  adminMiddleware,
+  AuthControllers.getAllUsers,
 );
 
 export const AuthRoutes = router;

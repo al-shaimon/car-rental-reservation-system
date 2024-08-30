@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthControllers = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
+exports.AuthControllers = exports.getAllUsers = exports.updateUserAsAdmin = exports.updateProfile = exports.resetPassword = exports.forgetPassword = exports.signin = exports.signup = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -185,10 +185,53 @@ const updateProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.updateProfile = updateProfile;
+const updateUserAsAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { name, phone, role, isDeleted } = req.body;
+        const updatedUser = yield user_service_1.AuthServices.updateUserByAdmin(userId, {
+            name,
+            phone,
+            role,
+            isDeleted,
+        });
+        if (!updatedUser) {
+            return (0, responseUtils_1.sendNoDataFoundResponse)(res);
+        }
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            data: updatedUser,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.updateUserAsAdmin = updateUserAsAdmin;
+const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield user_service_1.AuthServices.getAllUsers();
+        res.status(200).json({
+            success: true,
+            message: 'All users retrieved successfully',
+            data: {
+                users,
+                count: users.length,
+            },
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getAllUsers = getAllUsers;
 exports.AuthControllers = {
     signup: exports.signup,
     signin: exports.signin,
     forgetPassword: exports.forgetPassword,
     resetPassword: exports.resetPassword,
     updateProfile: exports.updateProfile,
+    updateUserAsAdmin: exports.updateUserAsAdmin,
+    getAllUsers: exports.getAllUsers,
 };
